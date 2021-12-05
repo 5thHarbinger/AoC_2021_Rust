@@ -4,6 +4,7 @@ mod solutions;
 
 fn main() {
     let sol = [
+        solutions::day_01::part_a(),
     ];
 
     for (i, item) in sol.iter().enumerate() {
