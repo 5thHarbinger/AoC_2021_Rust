@@ -1,6 +1,6 @@
 [package]
 name = "aoc_2021"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["Marius Vallas <contact@marius.wtf>"]
 description = "Adventure of Code 2021 in Rust"
