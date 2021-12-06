@@ -19,25 +19,45 @@ solution!(
         let first = won_grids.first().unwrap();
 
         (first.last_number.unwrap() * first.get_remaining_sum()).to_string()
+    },
+    || {
+        let data = common::load("day_04");
+        let mut blocks = data
+            .split("\n\n")
+            .collect::<Vec<&str>>();
+        let numbers = blocks
+            .remove(0)
+            .split(",")
+            .map(|x| x.parse::<u32>().unwrap())
+            .collect::<Vec<u32>>();
+        let mut grids: Vec<Grid> = Vec::with_capacity(blocks.len());
+        for block in blocks.iter() {
+            grids.push(Grid::from_string(5, block))
+        }
+
+        let won_grids = resolve(grids, numbers);
+        let last = won_grids.last().unwrap();
+
+        (last.last_number.unwrap() * last.get_remaining_sum()).to_string()
     }
 );
 
 fn resolve(mut grids: Vec<Grid>, numbers: Vec<u32>) -> Vec<Grid> {
     let mut won_grids: Vec<Grid> = Vec::with_capacity(grids.len());
 
-    let mut to_remove: Option<usize>;
+    let mut to_remove: Vec<usize>;
     for number in numbers {
-        to_remove = None;
+        to_remove = Vec::new();
         for (i, grid) in &mut grids.iter_mut().enumerate() {
-            if grid.check_number(number) && grid.is_win() {
-                grid.last_number = Some(number);
-                to_remove = Some(i);
-                break;
+            if let None = grid.last_number {
+                if grid.check_number(number) && grid.is_win() {
+                    grid.last_number = Some(number);
+                    to_remove.push(i);
+                }
             }
         }
-        match to_remove {
-            Some(i) => won_grids.push(grids.remove(i)),
-            None => (),
+        for i in to_remove {
+            won_grids.push(grids[i].to_owned());
         }
     }
 
@@ -47,6 +67,7 @@ fn resolve(mut grids: Vec<Grid>, numbers: Vec<u32>) -> Vec<Grid> {
 
 use std::cell::Cell;
 
+#[derive(Clone)]
 struct GridCell {
     value: u32,
     is_checked: Cell<bool>,
@@ -61,7 +82,7 @@ impl GridCell {
     }
 }
 
-
+#[derive(Clone)]
 struct Grid {
     size: usize,
     cells: Vec<GridCell>,
