@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::cmp;
+use crate::solutions;
 
 solution!(
     "Day 5: Hydrothermal Venture",
@@ -8,9 +8,23 @@ solution!(
         let mut points: HashMap<Point, usize> = HashMap::new();
 
         for segment in segments.iter() {
-            points = segment.calculate_points(points);
+            points = segment.calculate_points(points, false);
         }
         
+        points
+            .into_values()
+            .filter(|v| v >= &2)
+            .count()
+            .to_string()
+    },
+    || {
+        let segments = Segment::from_file(common::load("day_05"));
+        let mut points: HashMap<Point, usize> = HashMap::new();
+
+        for segment in segments.iter() {
+            points = segment.calculate_points(points, true);
+        }
+
         points
             .into_values()
             .filter(|v| v >= &2)
@@ -62,30 +76,42 @@ impl Segment {
         segments
     }
 
-    pub fn calculate_points(&self, mut points: HashMap<Point, usize>) -> HashMap<Point, usize> {
+    pub fn calculate_points(&self, mut points: HashMap<Point, usize>, diag: bool) -> HashMap<Point, usize> {
+        let mut increment = |p| {
+            if points.contains_key(&p) {
+                *points.get_mut(&p).unwrap() += 1;
+            } else {
+                points.insert(p, 1);
+            }
+        };
         if self.a.x == self.b.x {
             for y in get_range(self.a.y, self.b.y) {
-                let p = Point { x: self.a.x, y };
-                if points.contains_key(&p) {
-                    *points.get_mut(&p).unwrap() += 1;
-                } else {
-                    points.insert(p, 1);
-                }
+                increment(Point { x: self.a.x, y });
             }
         } else if self.a.y == self.b.y {
             for x in get_range(self.a.x, self.b.x) {
-                let p = Point { x, y: self.a.y };
-                if points.contains_key(&p) {
-                    *points.get_mut(&p).unwrap() += 1;
-                } else {
-                    points.insert(p, 1);
-                }
+                increment(Point { x, y: self.a.y });
+            }
+        } else if diag && get_diff(self.a.x, self.b.x) == get_diff(self.a.y, self.b.y) {
+            let xs = get_range(self.a.x, self.b.x);
+            let ys = get_range(self.a.y, self.b.y);
+            for i in 0..xs.len() {
+                increment(Point { x: xs[i], y: ys[i] });
             }
         }
         points
     }
 }
 
-fn get_range(a: usize, b: usize) -> std::ops::RangeInclusive<usize> {
-    cmp::min(a, b)..=cmp::max(a, b)
+fn get_range(a: usize, b: usize) -> Vec<usize> {
+    let range = std::cmp::min(a, b)..=std::cmp::max(a, b);
+    if a < b {
+        range.rev().collect()
+    } else {
+        range.collect()
+    }
+}
+
+fn get_diff(a: usize, b: usize) -> usize {
+    (a as isize - b as isize).abs() as usize
 }

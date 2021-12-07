@@ -13,6 +13,7 @@ fn main() {
         solutions::day_04::part_a(),
         solutions::day_04::part_b(),
         solutions::day_05::part_a(),
+        solutions::day_05::part_b(),
     ];
 
     for (i, item) in sol.iter().enumerate() {
