@@ -3,6 +3,8 @@ mod common;
 mod solutions;
 
 fn main() {
+    print!("{}{}", termion::clear::All, termion::cursor::Goto(1, 1));
+
     let sol = [
         solutions::day_01::part_a(),
         solutions::day_01::part_b(),
@@ -16,6 +18,7 @@ fn main() {
         solutions::day_05::part_b(),
         solutions::day_06::part_a(),
         solutions::day_06::part_b(),
+        solutions::day_07::part_a(),
     ];
 
     for (i, item) in sol.iter().enumerate() {
