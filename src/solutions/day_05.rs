@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use crate::solutions;
 
 solution!(
     "Day 5: Hydrothermal Venture",
