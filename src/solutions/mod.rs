@@ -6,3 +6,4 @@ pub mod day_05; // https://adventofcode.com/2021/day/5
 pub mod day_06; // https://adventofcode.com/2021/day/6
 pub mod day_07; // https://adventofcode.com/2021/day/7
 pub mod day_08; // https://adventofcode.com/2021/day/8
+pub mod day_09; // https://adventofcode.com/2021/day/9
